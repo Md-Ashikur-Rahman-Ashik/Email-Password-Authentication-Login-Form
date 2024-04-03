@@ -5,6 +5,11 @@ import { useState } from "react";
 const Register = () => {
   const [registerError, setRegisterError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -18,6 +23,11 @@ const Register = () => {
 
     // console.log("The email is:", email);
     // console.log("The password is:", password);
+
+    if (!/[A-Z]/.test(password)) {
+      setRegisterError("Your password must contain a Uppercase character");
+      return;
+    }
 
     // Create User
     createUserWithEmailAndPassword(auth, email, password)
@@ -48,14 +58,18 @@ const Register = () => {
             required
           />
           <br />
-          <input
-            className="mb-4 w-3/4 py-2 px-4"
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-          />
-          <br />
+          <div>
+            <input
+              className="mb-4 w-3/4 py-2 px-4"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <span onClick={handleShowPassword} className="cursor-pointer">
+              {showPassword ? "Hide" : "Show"}
+            </span>
+          </div>
           <input
             className="mb-4 btn btn-secondary text-white w-3/4"
             type="submit"
