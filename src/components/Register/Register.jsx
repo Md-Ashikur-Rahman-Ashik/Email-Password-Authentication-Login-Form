@@ -6,6 +6,7 @@ const Register = () => {
   const [registerError, setRegisterError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -20,12 +21,17 @@ const Register = () => {
     // console.log("Form Submitting")
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const accepted = e.target.terms.checked;
+    setIsAccepted(accepted);
 
     // console.log("The email is:", email);
     // console.log("The password is:", password);
 
     if (!/[A-Z]/.test(password)) {
       setRegisterError("Your password must contain a Uppercase character");
+      return;
+    } else if (isAccepted === false) {
+      setRegisterError("Please accept our terms and conditions");
       return;
     }
 
@@ -66,10 +72,20 @@ const Register = () => {
               placeholder="Password"
               required
             />
-            <span onClick={handleShowPassword} className="cursor-pointer absolute right-36 top-2">
+            <span
+              onClick={handleShowPassword}
+              className="cursor-pointer absolute right-36 top-2"
+            >
               {showPassword ? "Hide" : "Show"}
             </span>
           </div>
+          <div className="flex gap-2">
+            <input type="checkbox" name="terms" id="terms" />
+            <label htmlFor="terms">
+              Accept our <a href="">Terms and Conditions</a>
+            </label>
+          </div>
+          <br />
           <input
             className="mb-4 btn btn-secondary text-white w-3/4"
             type="submit"
