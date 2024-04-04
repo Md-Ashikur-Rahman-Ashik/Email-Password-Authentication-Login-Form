@@ -58,7 +58,7 @@ const Register = () => {
             required
           />
           <br />
-          <div>
+          <div className="relative">
             <input
               className="mb-4 w-3/4 py-2 px-4"
               type={showPassword ? "text" : "password"}
@@ -66,7 +66,7 @@ const Register = () => {
               placeholder="Password"
               required
             />
-            <span onClick={handleShowPassword} className="cursor-pointer">
+            <span onClick={handleShowPassword} className="cursor-pointer absolute right-36 top-2">
               {showPassword ? "Hide" : "Show"}
             </span>
           </div>
