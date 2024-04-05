@@ -1,9 +1,48 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [registerError, setRegisterError] = useState("");
+  const [success, setSuccess] = useState("");
+  const emailRef = useRef(null);
+
+  const handleForgetPassword = () => {
+    const email = emailRef.current.value;
+    // console.log("Send Reset Email");
+    // console.log(emailRef.current.value);
+    if (!email) {
+      console.log("Please provide an email");
+      return;
+    } else if (
+      !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        email
+      )
+    ) {
+      console.log("Please write a valid email");
+      return;
+    }
+
+    // Send validation email
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert("Please check your email");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
+
+    // Reset Error
+    setRegisterError("");
+    setSuccess("");
 
     const email = e.target.email.value;
     const password = e.target.password.value;
@@ -12,11 +51,11 @@ const Login = () => {
     // console.log("The password is:", password);
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        const user = result.user;
-        console.log(user);
+        // const user = result.user;
+        setSuccess("User Login successful");
       })
       .catch((error) => {
-        console.error(error);
+        // setRegisterError(error.message);
       });
   };
 
@@ -42,6 +81,7 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   name="email"
+                  ref={emailRef}
                   className="input input-bordered"
                   required
                 />
@@ -58,7 +98,11 @@ const Login = () => {
                   required
                 />
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
+                  <a
+                    onClick={handleForgetPassword}
+                    href="#"
+                    className="label-text-alt link link-hover"
+                  >
                     Forgot password?
                   </a>
                 </label>
@@ -67,6 +111,14 @@ const Login = () => {
                 <button className="btn btn-primary">Login</button>
               </div>
             </form>
+            {registerError && <p className="text-red-700">{registerError}</p>}
+            {success && <p className="text-green-400">{success}</p>}
+            <p className="mx-auto">
+              New to this website? Please{" "}
+              <Link className="text-purple-400" to="/register">
+                Register
+              </Link>
+            </p>
           </div>
         </div>
       </div>
