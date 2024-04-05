@@ -6,7 +6,7 @@ const Register = () => {
   const [registerError, setRegisterError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isAccepted, setIsAccepted] = useState(false);
+  const [acceptMessage, setAcceptMessage] = useState("");
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -16,22 +16,24 @@ const Register = () => {
     e.preventDefault();
 
     // Reset Error
+    setAcceptMessage("");
     setSuccess("");
     setRegisterError("");
     // console.log("Form Submitting")
     const email = e.target.email.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked;
-    setIsAccepted(accepted);
+
+    if (accepted === false) {
+      setAcceptMessage("You should accept our terms and conditions");
+      return;
+    }
 
     // console.log("The email is:", email);
     // console.log("The password is:", password);
 
     if (!/[A-Z]/.test(password)) {
       setRegisterError("Your password must contain a Uppercase character");
-      return;
-    } else if (isAccepted === false) {
-      setRegisterError("Please accept our terms and conditions");
       return;
     }
 
@@ -94,6 +96,7 @@ const Register = () => {
         </form>
         {registerError && <p className="text-red-700">{registerError}</p>}
         {success && <p className="text-green-400">{success}</p>}
+        {acceptMessage && <p className="text-red-700">{acceptMessage}</p>}
       </div>
     </div>
   );
