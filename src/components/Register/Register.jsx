@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -21,9 +25,12 @@ const Register = () => {
     setSuccess("");
     setRegisterError("");
     // console.log("Form Submitting")
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked;
+
+    // console.log("The user's name is:", name);
 
     if (accepted === false) {
       setAcceptMessage("You should accept our terms and conditions");
@@ -43,6 +50,19 @@ const Register = () => {
       .then((result) => {
         // console.log(result.user);
         setSuccess("User Registration completed");
+
+        // Update Profile
+        updateProfile(result.user, {
+          displayName: name,
+          photoURL: "https://example.com/jane-q-user/profile.jpg",
+        })
+          .then(() => console.log("Profile Updated"))
+          .catch();
+
+        // Send verification E-mail
+        sendEmailVerification(result.user).then(() => {
+          alert("Please check your email and verify your account");
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -59,6 +79,14 @@ const Register = () => {
       <div className="mx-auto md:w-1/2">
         <h3 className="text-3xl mb-8">Please Register</h3>
         <form onSubmit={handleRegister}>
+          <input
+            className="mb-4 w-3/4 py-2 px-4"
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            required
+          />
+          <br />
           <input
             className="mb-4 w-3/4 py-2 px-4"
             type="email"
@@ -98,7 +126,12 @@ const Register = () => {
         {registerError && <p className="text-red-700">{registerError}</p>}
         {success && <p className="text-green-400">{success}</p>}
         {acceptMessage && <p className="text-red-700">{acceptMessage}</p>}
-        <p className="mx-auto">Already have an account? Please <Link className="text-purple-500" to="/login">Login</Link></p>
+        <p className="mx-auto">
+          Already have an account? Please{" "}
+          <Link className="text-purple-500" to="/login">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

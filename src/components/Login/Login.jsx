@@ -52,10 +52,13 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         // const user = result.user;
-        setSuccess("User Login successful");
+        if (result.user.emailVerified) {
+          setSuccess("User Login successful");
+        }
       })
       .catch((error) => {
         // setRegisterError(error.message);
+        alert("Please Verify your email address");
       });
   };
 
